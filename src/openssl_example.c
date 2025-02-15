@@ -12,17 +12,41 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define HOST "toxypiks.github.io"
-#define PORT "443"
+#define HOST "geminiprotocol.net"
+#define PORT "1965"
 
 int main(void)
 {
-    int fd = 0;
-    fd = socket(AF_INET, SOCK_STREAM, 0);
-    if(fd < 0) {
-        fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
+    struct addrinfo hints = {0};
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+
+    struct addrinfo *addrs;
+    if (getaddrinfo(HOST, PORT, &hints, &addrs) < 0) {
+        fprintf(stderr, "Could not get address of `"HOST"`: %s\n",
+                strerror(errno));
         exit(1);
     }
-    printf("Creat socket %d\n", fd);
-    return 0;
+
+    int fd = 0;
+
+     for (struct addrinfo *addr = addrs; addr != NULL; addr = addr->ai_next) {
+         fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+         if(fd < 0) {
+             fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
+             exit(1);
+         }
+         if (fd == -1) break;
+         if (connect(fd, addr->ai_addr, addr->ai_addrlen) == 0)
+         {
+             printf("Create socket %d\n", fd);
+             break;
+         }
+
+         close(fd);
+         fd = -1;
+     }
+     freeaddrinfo(addrs);
+     return 0;
 }
