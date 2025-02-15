@@ -46,6 +46,5 @@ int main(void)
                 strerror(errno));
         exit(1);
     }
-
     return 0;
 }
