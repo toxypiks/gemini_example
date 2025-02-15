@@ -17,34 +17,12 @@
 
 int main(void)
 {
-    struct addrinfo hints = {0};
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
-
-    struct addrinfo *addrs;
-    if (getaddrinfo(HOST, PORT, &hints, &addrs) < 0) {
-        fprintf(stderr, "Could not get address of `"HOST"`: %s\n",
-                strerror(errno));
+    int fd = 0;
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(fd < 0) {
+        fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
         exit(1);
     }
-
-    int sd = 0;
-    for (struct addrinfo *addr = addrs; addr != NULL; addr = addr->ai_next) {
-        sd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-
-        if (sd == -1) break;
-        if (connect(sd, addr->ai_addr, addr->ai_addrlen) == 0) break;
-
-        close(sd);
-        sd = -1;
-    }
-    freeaddrinfo(addrs);
-
-    if (sd == -1) {
-        fprintf(stderr, "Could not connect to "HOST":"PORT": %s\n",
-                strerror(errno));
-        exit(1);
-    }
+    printf("Creat socket %d\n", fd);
     return 0;
 }
