@@ -45,11 +45,8 @@ int main(void)
         }
         if (connect(fd, addr->ai_addr, addr->ai_addrlen) == 0)
         {
-            struct sockaddr_in* pV4Addr = (struct sockaddr_in*)addr->ai_addr;
-            struct in_addr ipAddr = pV4Addr->sin_addr;
-            char str[INET_ADDRSTRLEN];
-            printf("address: %s\n", inet_ntop( AF_INET, &ipAddr, str, INET_ADDRSTRLEN ));
             printf("Create socket %d\n", fd);
+            printf("address: %s\n", inet_ntoa(((struct sockaddr_in *)addr->ai_addr)->sin_addr));
             break;
         }
     }
