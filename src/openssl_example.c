@@ -31,22 +31,24 @@ int main(void)
 
     int fd = 0;
 
-     for (struct addrinfo *addr = addrs; addr != NULL; addr = addr->ai_next) {
-         fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-         if(fd < 0) {
-             fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
-             exit(1);
-         }
-         if (fd == -1) break;
-         if (connect(fd, addr->ai_addr, addr->ai_addrlen) == 0)
-         {
-             printf("Create socket %d\n", fd);
-             break;
-         }
-
-         close(fd);
-         fd = -1;
-     }
-     freeaddrinfo(addrs);
-     return 0;
+    for (struct addrinfo *addr = addrs; addr != NULL; addr = addr->ai_next) {
+        fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        if (fd == -1) {
+            fprintf(stderr, "Could not connect to "HOST":"PORT": %s\n",
+            strerror(errno));
+            close(fd);
+            break;
+        }
+        if(fd < 0) {
+            fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
+            exit(1);
+        }
+        if (connect(fd, addr->ai_addr, addr->ai_addrlen) == 0)
+        {
+            printf("Create socket %d\n", fd);
+            break;
+        }
+    }
+    freeaddrinfo(addrs);
+    return 0;
 }
