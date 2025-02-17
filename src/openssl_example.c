@@ -15,8 +15,16 @@
 #define HOST "geminiprotocol.net"
 #define PORT "1965"
 
-int main(void)
+int main(int argc, char** argv)
 {
+    char* param = "";
+    char* request_end = "\r\n";
+
+    if(argc > 1) {
+        param = argv[1];
+        request_end = "/\r\n";
+    }
+
     struct addrinfo hints = {0};
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -72,10 +80,13 @@ int main(void)
         exit(1);
     }
 
-    const char *request =
-        "gemini://geminiprotocol.net/\r\n";
+    const char* request = "gemini://geminiprotocol.net/";
 
-    SSL_write(ssl, request, strlen(request));
+    char request_buf[1024] = {0};
+    sprintf(request_buf,"%s%s%s", request, param, request_end);
+    printf("%s\n", request_buf);
+
+    SSL_write(ssl, request_buf, strlen(request));
 
     char buffer[1024];
     ssize_t n = SSL_read(ssl, buffer, sizeof(buffer));
