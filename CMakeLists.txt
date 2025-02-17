@@ -8,6 +8,16 @@ find_package(OpenSSL REQUIRED)
 
 include_directories(include)
 
+set(SOCKET_SRC
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/socket_example.c
+  )
+
+add_executable(socket_example)
+target_sources(socket_example
+ PRIVATE
+  ${SOCKET_SRC}
+)
+
 set(OPENSSL_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/openssl_example.c
   )
