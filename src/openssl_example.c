@@ -34,12 +34,6 @@ int main(void)
     for (struct addrinfo *addr = addrs; addr != NULL; addr = addr->ai_next) {
         fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if (fd == -1) {
-            fprintf(stderr, "Could not connect to "HOST":"PORT": %s\n",
-            strerror(errno));
-            close(fd);
-            break;
-        }
-        if(fd < 0) {
             fprintf(stderr, "Could not connect to socket %s\n", strerror(errno));
             exit(1);
         }
@@ -49,7 +43,14 @@ int main(void)
             printf("address: %s\n", inet_ntoa(((struct sockaddr_in *)addr->ai_addr)->sin_addr));
             break;
         }
+        close(fd);
+        fd = -1;
     }
     freeaddrinfo(addrs);
+    if (fd == -1) {
+        fprintf(stderr, "Could not connect to "HOST":"PORT": %s\n",
+        strerror(errno));
+        exit(1);
+    }
     return 0;
 }
