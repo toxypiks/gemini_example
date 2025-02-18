@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    const char* request = "gemini://geminiprotocol.net/";
+    const char* request = "gemini://geminiprotocol.net/news/2024_10_24.gmi";
 
     char request_buf[1024] = {0};
     sprintf(request_buf,"%s%s%s", request, param, request_end);
