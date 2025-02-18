@@ -80,13 +80,15 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    const char* request = "gemini://geminiprotocol.net/news/2024_10_24.gmi";
+    const char* request = "gemini://geminiprotocol.net/";
 
     char request_buf[1024] = {0};
     sprintf(request_buf,"%s%s%s", request, param, request_end);
-    printf("%s\n", request_buf);
 
-    SSL_write(ssl, request_buf, strlen(request));
+    size_t buf_length = strlen(request_buf);
+    printf("%d %s\n", buf_length, request_buf);
+
+    SSL_write(ssl, request_buf, buf_length);
 
     char buffer[1024];
     ssize_t n = SSL_read(ssl, buffer, sizeof(buffer));
